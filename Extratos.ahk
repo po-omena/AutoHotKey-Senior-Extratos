@@ -14,33 +14,32 @@ IfWinExist, Gestão Empresarial
 		Send, {BACKSPACE}
 		MouseClick, left, 166,94
 		Send, %LoteInput%
-		MouseClick, left,890, 92
-		Sleep 500
-		Send, {DOWN}
+		Send,{TAB 2}
+		Sleep 200
 	}
 Else 
 	{
 		MsgBox, Error, Senior not running.
 		return
 	}
-InputBox, DataInput, Data, Por favor entrar com o mês e ano,,200,100
-if ErrorLevel 
-	{
-		MsgBox, Operação cancelada.
-		return
-	}	
-else if (StrLen(DataInput)<7)
-		{
-			MsgBox, Data Inválida.
-			return
-		}
-else
-	MsgBox, Mês e ano definido como: "%DataInput%"
-
-FileCopy, C:\Users\Processos\Desktop\DADOSCSV.csv, C:\Users\Processos\Desktop\DADOS.csv
+; InputBox, DataInput, Data, Por favor entrar com o mês e ano,,200,100
+; if ErrorLevel 
+; 	{
+; 		MsgBox, Operação cancelada.
+; 		return
+; 	}	
+; else if (StrLen(DataInput)<7)
+; 		{
+; 			MsgBox, Data Inválida.
+; 			return
+; 		}
+; else
+; 	MsgBox, Mês e ano definido como: "%DataInput%"
 Sleep, 2000
+
 CoordMode, Mouse, Window
 SetTitleMatchMode, 2
+
 IfWinNotExist, Notepad++
 	Run C:\Program Files\Notepad++\notepad++.exe
 WinWait, Notepad++
@@ -49,11 +48,11 @@ IfWinExist, Notepad++
 		WinActivate
 		WinMaximize
 	}
-IfWinNotActive, DADOS.csv
+IfWinNotActive, DADOS.txt
 	{
 		Send, {CONTROL DOWN}{o}{CONTROL UP}
 		WinWait, Abrir
-		Send, C:\Users\Processos\Desktop\DADOS.csv
+		Send, C:\Users\Processos\Desktop\DADOS.txt
 		MouseClick, Left, 508, 446
 	}
 MsgBox,4,Warning, Os dados estão corretos?
@@ -62,24 +61,13 @@ IfMsgBox No
 Sleep, 30
 Send, {CONTROL DOWN}{HOME}{CONTROL UP}
 Send, {HOME}{SHIFT DOWN}{END}{SHIFT UP}{DEL}{DEL}				
-Send, {CONTROL DOWN}{h}{CONTROL UP}
-WinWait, Substituir
-Send, `;;;;;;;
-Send, {TAB}{BACKSPACE}
-MouseClick, Left, 476, 134
-Sleep, 100
-Send, R${Click}
-Sleep, 50
-Send, .{Click}
-Sleep,50
-Send, {ESC}
 MouseClick, Left, 86, 41
 MouseMove, 230, 317
 Sleep, 750
 MouseMove, 505,0,,Relative
 MouseClick, Left, 705, 473
 Send, {CONTROL DOWN}{s}{CONTROL UP}
-Loop, Read, C:\Users\Processos\Desktop\DADOS.csv
+Loop, Read, C:\Users\Processos\Desktop\DADOS.txt
 	{
 		if (BreakLoop = 1)
 			{
@@ -97,21 +85,21 @@ Loop, %total_lines%
 			}
 		Send, {CONTROL DOWN}{F9}{CONTROL UP}
 	}
+
+
+Send, {CONTROL DOWN}{h}{CONTROL UP}
+WinWait, Substituir
+Send, "
+Send, {TAB}{BACKSPACE}
+MouseClick, Left, 476, 134
+Sleep, 100
+Send, {ESC}
 Send, {CONTROL DOWN}{HOME}{CONTROL UP}
-Send, {DOWN 3}
-clipboard = %DataInput% ; 										DIGITE NESTA LINHA O MÊS E ANO NO FORMATO XX/XXXX
-Loop, %total_lines%
-	{
-		if (BreakLoop = 1)
-			{
-				break 
-			}
-		Send, {CONTROL DOWN}{F10}{CONTROL UP}
-	}
-Send, {CONTROL DOWN}{s}{CONTROL UP}
 Array := []
 ArrayCount := 0
 SetTitleMatchMode, 2
+SetKeyDelay 1,0
+
 Loop % total_lines * 5
 	{
 		if (BreakLoop = 1)
@@ -119,10 +107,9 @@ Loop % total_lines * 5
 				break 
 			}
 		Sleep, 15			
-		if WinExist("DADOS.csv - Notepad++")
+		if WinExist("DADOS.txt - Notepad++")
 			{
 				ArrayCount += 1
-				SetKeyDelay 0,0
 				WinActivate  ; Automatically uses the window found above.
 				Send, {CONTROL DOWN}{Home}{CONTROL UP}
 				Sleep, 10
@@ -148,30 +135,36 @@ if WinExist("Senior |")
 						break 
 					}
 				counter := % counter + 1
+				Sleep, 7
 				Send, {Enter}
-				Sleep, 50
+				Sleep, 60
 				Send % Value := Array[counter]		;INSERÇÃO DA CONTA DEBITADA
-				counter := % counter + 1
+				Sleep, 60
 				Send, {Enter}
-				Sleep, 50
+				counter := % counter + 1
 				Send % Value := Array[counter]		;INSERÇÃO DA CONTA CREDITADA
-				counter := % counter + 1
+				Sleep, 60
 				Send, {Enter}
-				Sleep, 100
+				counter := % counter + 1
 				Send % Value := Array[counter]   ;INSERÇÃO DO VALOR
-				counter := % counter + 1
+				Sleep, 60
 				Send, {Enter}
-				Sleep, 50
+				counter := % counter + 1
 				Send % Value := Array[counter]			;INSERÇÃO DA DATA
+				Sleep, 60
+				Send, {Enter}
+				Sleep, 60
 				counter := % counter + 1
 				Send, {Enter}
-				Sleep, 20
-				Send, {Enter}
-				Sleep, 50
+				Sleep, 60
+				SetKeyDelay 0,0
 				Send % Value := Array[counter]		;INSERÇÃO  DO MOTIVO
-				Sleep, 50
-				Send,  {Enter 2}
-				Sleep, 100
+				SetKeyDelay 20,15
+				Sleep, 60
+				Send,  {Enter}
+				Sleep, 60
+				Send,  {Enter}
+				Sleep, 60
 			}
 	}
 
